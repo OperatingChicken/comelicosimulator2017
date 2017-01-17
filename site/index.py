@@ -8,6 +8,8 @@ import page
 import os
 import sys
 import hashlib
+import io
+import codecs
 
 cgitb.enable()
 def exception_handler(a, b, c):
@@ -15,6 +17,8 @@ def exception_handler(a, b, c):
     print()
     cgitb.handler((a, b, c))
 sys.excepthook = exception_handler
+
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 database = db.DB("game", "comsimgame17", "game", "game", "eip.ovh", True)
 
@@ -141,16 +145,22 @@ elif index == "play":
     room_data = database.query("SELECT id, finale, nome_tipo, descr_tipo, nome_proprio, nome_modif, descr_modif FROM stanza_view WHERE id = %s", (player_data[0][1],))
     room_adj = database.query("SELECT s.id, s.nome_tipo, s.nome_proprio FROM connessa AS c JOIN stanza_view AS s ON c.stanza2 = s.id WHERE c.stanza1 = %s AND c.visibile", (player_data[0][1],))
     player_attr = database.query("SELECT _att, _dif, _per, _pfmax, _pfrim FROM personaggio_attr_deriv WHERE id = %s", (player_data[0][-1],))
-    p.add_title(room_data[0][2] + " &#" + str(ord(room_data[0][4])) + ";")
+    p.add_title(room_data[0][2] + " " + room_data[0][4])
     p.add_paragraph(room_data[0][3] + "<br/>" + room_data[0][6])
     if room_data[0][1]:
-        p.add_paragraph("# TODO: hai finito il gioco, bravo pirla")
+        p.add_paragraph("Hai trovato la strada per tornare a casa!")
         p.add_button("Termina l'avventura", "index.py?page=endgame?player=" + form.getfirst("player")) # TODO: fare pagina endgame
-    # TODO: Nemici
+    enemies = database.query("SELECT id, nome, descr, _att, _dif, _pfmax, _pfrim, _danno FROM ist_nemico_view WHERE in_stanza = %s", (room_data[0][0],))
+    if len(enemies) != 0:
+        p.add_paragraph("Ci sono dei nemici:")
+    for enemy in enemies:
+        p.add_paragraph(enemy[1] + ": " + enemy[2])
+        p.add_paragraph("ATT: " + str(enemy[3]) + " | DIF: " + str(enemy[4]) + " | PF: " + str(enemy[6]) + "/" + str(enemy[5]) + " | Danno: " + str(enemy[7]) + " ")
+        p.add_button("Attacca", "index.py?page=attack&amp;player=" + form.getfirst("player") + "&amp;enemy=" + str(enemy[0]))
     # TODO: Oggetti
     p.add_paragraph("Da qui puoi raggiungere:")
     for room in room_adj:
-        p.add_button(room[1] + " &#" + str(ord(room[2])) + ";", "index.py?page=update_room&amp;player=" + form.getfirst("player") + "&amp;room=" + str(room[0]))
+        p.add_button(room[1] + " " + room[2], "index.py?page=update_room&amp;player=" + form.getfirst("player") + "&amp;room=" + str(room[0]))
         p.add_newline()
     p.add_newline()
     p.add_button("Cerca segreti (-1 PF)", "index.py?page=secret?player=" + form.getfirst("player")) # TODO: fare pagina secret
@@ -165,12 +175,23 @@ elif index == "play":
     p.add_paragraph("COS: " + str(player_data[0][8]))
     p.add_paragraph("Monete: " + str(player_data[0][9]))
     p.add_paragraph("PE: " + str(player_data[0][10]))
-    # TODO: inventario
+    p.add_button("Inventario", "index.py?page=inventory&amp;player=" + form.getfirst("player"))
     # TODO: marketplace
+    p.add_button("Torna alla selezione del personaggio", "index.py?page=index")
+elif index == "inventory":
+    if "player" not in form:
+        redirect("index.py?page=error")
+    player_data = database.query("SELECT creato_da, in_stanza FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
+    if len(player_data) == 0 or player_data[0][0] != sess.data["id"]:
+        redirect("index.py?page=error")
+    items = database.query("SELECT nome, descr, nome_car, descr_car, nome_rarita, descr_rarita, classe, equip, _att, _dif, _per, _pf, _danno, recupero_pf FROM zaino(%s)", (form.getfirst("player"),))
+    # TODO: interfaccia di 'sta merda
 elif index == "newgame":
     if "player" not in form:
         redirect("index.py?page=error")
-    p.add_paragraph("Ti risvegli a Comelico...") # TODO
+    p.add_paragraph("Ti risvegli a Comelico...")
+    p.add_paragraph("Sei confuso, vedi figure misteriose aggirarsi in Comelico")
+    p.add_paragraph("Non sei interessato a scoprire cosa sia successo, vuoi solo trovare la strada per tornare a casa")
     p.add_button("Inizia a giocare", "index.py?page=play&amp;player=" + form.getfirst("player"))
 else:
     p.add_paragraph("Errore!")
