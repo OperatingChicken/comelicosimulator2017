@@ -87,16 +87,6 @@ elif index == "register":
         err = form.getfirst("err")
         if err == "1":
             p.add_paragraph("E-Mail già esistente!")
-elif index == "index":
-    players = database.query("SELECT id, nome, descr, morto FROM personaggio WHERE creato_da = %s", (sess.data["id"],))
-    if len(players) == 0:
-        redirect("index.py?page=create")
-    p.add_title("Personaggi")
-    for pl in players:
-        p.add_button("Gioca", "index.py?page=play&amp;play=" + str(pl[0]), pl[3])
-        p.add_text(" " + pl[1] + ": " + pl[2])
-        p.add_newline()
-    p.add_button("Crea un nuovo personaggio!", "index.py?page=create")
 elif index == "create":
     if ("name" in form) and ("desc" in form) and ("FOR" in form) and ("INT" in form) and ("AGI" in form) and ("COS" in form):
         database.call_function("crea_personaggio", (form.getfirst("name"), form.getfirst("desc"), int(form.getfirst("FOR")), int(form.getfirst("INT")), int(form.getfirst("AGI")), int(form.getfirst("COS")), sess.data["id"]))
@@ -115,6 +105,73 @@ elif index == "create":
                                             {"pn": "Indice INTELLIGENZA", "n": "INT", "t": "number"},
                                             {"pn": "Indice AGILITA", "n": "AGI", "t": "number"},
                                             {"pn": "Indice COSTITUZIONE", "n": "COS", "t": "number"}], "Crea")
+elif index == "index":
+    players = database.query("SELECT id, nome, descr, morto FROM personaggio WHERE creato_da = %s", (sess.data["id"],))
+    if len(players) == 0:
+        redirect("index.py?page=create")
+    p.add_title("Personaggi")
+    for pl in players:
+        p.add_button("Gioca", "index.py?page=play&amp;player=" + str(pl[0]), pl[3])
+        p.add_text(" " + pl[1] + ": " + pl[2])
+        if pl[3]:
+            p.add_text(" (Morto)")
+        p.add_newline()
+    p.add_button("Crea un nuovo personaggio!", "index.py?page=create")
+    p.add_newline()
+    p.add_text("<button type='button' onclick='document.cookie = \"magic=;expires=Thu, 01 Jan 1970 00:00:01 GMT;\"; window.location.href = \"index.py?page=login\";'>Logout</button>")
+elif index == "update_room":
+    if ("player" not in form) or ("room" not in form):
+        redirect("index.py?page=error")
+    player_data = database.query("SELECT creato_da FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
+    if len(player_data) == 0 or player_data[0][0] != sess.data["id"]:
+        redirect("index.py?page=error")
+    database.query("UPDATE personaggio SET in_stanza = %s WHERE id = %s", (int(form.getfirst("room")), int(form.getfirst("player"))))
+    redirect("index.py?page=play&amp;player=" + form.getfirst("player"))
+elif index == "play":
+    if "player" not in form:
+        redirect("index.py?page=error")
+    player_data = database.query("SELECT creato_da, in_stanza, morto, nome, descr, _for, _int, _agi, _cos, monete, pe, id FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
+    if len(player_data) == 0 or player_data[0][0] != sess.data["id"]:
+        redirect("index.py?page=error")
+    if player_data[0][2]:
+        redirect("index.py?page=index")
+    if player_data[0][1] is None:
+        database.call_function("inizia_partita", (int(form.getfirst("player")),))
+        redirect("index.py?page=newgame&amp;player=" + form.getfirst("player"))
+    room_data = database.query("SELECT id, finale, nome_tipo, descr_tipo, nome_proprio, nome_modif, descr_modif FROM stanza_view WHERE id = %s", (player_data[0][1],))
+    room_adj = database.query("SELECT s.id, s.nome_tipo, s.nome_proprio FROM connessa AS c JOIN stanza_view AS s ON c.stanza2 = s.id WHERE c.stanza1 = %s AND c.visibile", (player_data[0][1],))
+    player_attr = database.query("SELECT _att, _dif, _per, _pfmax, _pfrim FROM personaggio_attr_deriv WHERE id = %s", (player_data[0][-1],))
+    p.add_title(room_data[0][2] + " &#" + str(ord(room_data[0][4])) + ";")
+    p.add_paragraph(room_data[0][3] + "<br/>" + room_data[0][6])
+    if room_data[0][1]:
+        p.add_paragraph("# TODO: hai finito il gioco, bravo pirla")
+        p.add_button("Termina l'avventura", "index.py?page=endgame?player=" + form.getfirst("player")) # TODO: fare pagina endgame
+    # TODO: Nemici
+    # TODO: Oggetti
+    p.add_paragraph("Da qui puoi raggiungere:")
+    for room in room_adj:
+        p.add_button(room[1] + " &#" + str(ord(room[2])) + ";", "index.py?page=update_room&amp;player=" + form.getfirst("player") + "&amp;room=" + str(room[0]))
+        p.add_newline()
+    p.add_newline()
+    p.add_button("Cerca segreti (-1 PF)", "index.py?page=secret?player=" + form.getfirst("player")) # TODO: fare pagina secret
+    p.add_paragraph("Statistiche " + player_data[0][3] + ":")
+    p.add_paragraph("PF: " + str(player_attr[0][4]) + "/" + str(player_attr[0][3]))
+    p.add_paragraph("ATT: " + str(player_attr[0][0]))
+    p.add_paragraph("DIF: " + str(player_attr[0][1]))
+    p.add_paragraph("PER: " + str(player_attr[0][2]))
+    p.add_paragraph("FOR: " + str(player_data[0][5]))
+    p.add_paragraph("INT: " + str(player_data[0][6]))
+    p.add_paragraph("AGI: " + str(player_data[0][7]))
+    p.add_paragraph("COS: " + str(player_data[0][8]))
+    p.add_paragraph("Monete: " + str(player_data[0][9]))
+    p.add_paragraph("PE: " + str(player_data[0][10]))
+    # TODO: inventario
+    # TODO: marketplace
+elif index == "newgame":
+    if "player" not in form:
+        redirect("index.py?page=error")
+    p.add_paragraph("Ti risvegli a Comelico...") # TODO
+    p.add_button("Inizia a giocare", "index.py?page=play&amp;player=" + form.getfirst("player"))
 else:
     p.add_paragraph("Errore!")
     p.add_text("<button type='button' onclick='window.history.back();'>Vai indietro!</button>")
