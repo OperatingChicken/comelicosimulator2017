@@ -150,8 +150,8 @@ elif index == "update_room":
     redirect("index.py?page=play&amp;player=" + form.getfirst("player"))
 elif index == "endgame":
     check_auth()
-    check_parameters(("player"))
-    #database.call_function("finisci_partita", (int(form.getfirst("player")),))
+    check_parameters(("player",))
+    database.call_function("finisci_partita", (int(form.getfirst("player")),))
     redirect("index.py?page=index")
 elif index == "play":
     def s(x):
