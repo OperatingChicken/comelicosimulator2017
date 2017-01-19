@@ -34,5 +34,8 @@ class Page:
             self.text += field["pn"] + ": <input type='" + field["t"] + "' name='" + field["n"] + "'"
             if "p" in field:
                 self.text += " placeholder='" + field["p"] + "'"
+            if field["t"] == "number":
+                if "min" in field:
+                    self.text += " min='" + field["min"] + "'"
             self.text += "/><br/>"
         self.text += "<input type='submit' value='" + send_label + "'/></form>"
