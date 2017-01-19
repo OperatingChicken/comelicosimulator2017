@@ -176,7 +176,7 @@ elif index == "play":
     p.add_paragraph(room_data[0][3] + "<br/>" + room_data[0][6])
     if room_data[0][1]:
         p.add_paragraph("Hai trovato la strada per tornare a casa!")
-        p.add_button("Termina l'avventura", "index.py?page=endgame?player=" + form.getfirst("player"))
+        p.add_button("Termina l'avventura", "index.py?page=endgame&amp;player=" + form.getfirst("player"))
     enemies = database.query("SELECT id, nome, descr, _att, _dif, _pfmax, _pfrim, _danno FROM ist_nemico_view WHERE in_stanza = %s", (room_data[0][0],))
     if len(enemies) != 0:
         p.add_paragraph("Ci sono dei nemici:")
