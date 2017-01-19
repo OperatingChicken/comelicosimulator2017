@@ -148,6 +148,11 @@ elif index == "update_room":
         redirect("index.py?page=error")
     database.query("UPDATE personaggio SET in_stanza = %s WHERE id = %s", (int(form.getfirst("room")), int(form.getfirst("player"))))
     redirect("index.py?page=play&amp;player=" + form.getfirst("player"))
+elif index == "endgame":
+    check_auth()
+    check_parameters(("player"))
+    database.call_function("finisci_partita", (int(form.getfirst("player")),))
+    redirect("index.py?page=index")
 elif index == "play":
     def s(x):
         if x is not None:
@@ -172,7 +177,6 @@ elif index == "play":
     if room_data[0][1]:
         p.add_paragraph("Hai trovato la strada per tornare a casa!")
         p.add_button("Termina l'avventura", "index.py?page=endgame?player=" + form.getfirst("player"))
-        # TODO: fare pagina endgame
     enemies = database.query("SELECT id, nome, descr, _att, _dif, _pfmax, _pfrim, _danno FROM ist_nemico_view WHERE in_stanza = %s", (room_data[0][0],))
     if len(enemies) != 0:
         p.add_paragraph("Ci sono dei nemici:")
@@ -188,13 +192,9 @@ elif index == "play":
             pass
         elif item[6] == "_ATT":
             start_desc += " (Oggetto d'attacco)"
-            if item[7]:
-                start_desc += " [Equipaggiato]"
             end_desc += " | Danno: " + s(item[12])
         elif item[6] == "_DIF":
             start_desc += " (Oggetto di difesa)"
-            if item[7]:
-                start_desc += " [Equipaggiato]"
         elif item[6] == "cons":
             pass
         elif item[6] == "cibo":
