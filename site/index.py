@@ -338,7 +338,7 @@ elif index == "marketplace":
             if item[7]:
                 start_desc += " [Equipaggiato]"
         elif item[6] == "cons":
-            pass
+            start_desc += " (Consumabile)"
         elif item[6] == "cibo":
             end_desc += " | Recupero PF: " + s(item[13])
         p.add_paragraph(start_desc)
