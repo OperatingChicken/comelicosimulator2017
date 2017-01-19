@@ -184,7 +184,8 @@ elif index == "play":
         p.add_paragraph(enemy[1] + ": " + enemy[2])
         p.add_paragraph("ATT: " + str(enemy[3]) + " | DIF: " + str(enemy[4]) + " | PF: " + str(enemy[6]) + "/" + str(enemy[5]) + " | Danno: " + str(enemy[7]) + " ")
         p.add_button("Attacca", "index.py?page=attack&amp;player=" + form.getfirst("player") + "&amp;enemy=" + str(enemy[0]))
-    p.add_paragraph("Oggetti nella stanza:")
+    if len(items) != 0:
+        p.add_paragraph("Oggetti nella stanza:")
     for item in items:
         start_desc = s(item[0]) + " " + s(item[4]) + " " + s(item[2]) + ": " + s(item[1]) + " " + s(item[3]) + " " + s(item[5])
         end_desc = "Bonus PF: " + s(item[11]) + " | ATT: " + s(item[8]) + " | DIF: " + s(item[9]) + " | PER: " + s(item[10])
