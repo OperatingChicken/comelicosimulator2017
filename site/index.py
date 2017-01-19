@@ -196,7 +196,7 @@ elif index == "play":
         elif item[6] == "_DIF":
             start_desc += " (Oggetto di difesa)"
         elif item[6] == "cons":
-            pass
+            start_desc += " (Consumabile)"
         elif item[6] == "cibo":
             end_desc += " | Recupero PF: " + s(item[13])
         p.add_paragraph(start_desc)
@@ -261,7 +261,7 @@ elif index == "inventory":
             if item[7]:
                 start_desc += " [Equipaggiato]"
         elif item[6] == "cons":
-            pass
+            start_desc += " (Consumabile)"
         elif item[6] == "cibo":
             end_desc += " | Recupero PF: " + s(item[13])
         p.add_paragraph(start_desc)
