@@ -154,6 +154,14 @@ elif index == "endgame":
     check_parameters(("player",))
     database.call_function("finisci_partita", (int(form.getfirst("player")),))
     redirect("index.py?page=index")
+elif index == "limbo":
+    check_auth()
+    check_parameters(("player",))
+    player_data = database.query("SELECT prox_pe, pe FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
+    p.add_title("Hai vinto!")
+    p.add_paragraph("Punti esperienza accumulati nella partita: " + str(player_data[0][0]))
+    p.add_paragraph("Punti esperienza totali: " + str(player_data[0][0] + player_data[0][1]))
+    p.add_button("index.py?page=endgame&amp;player=" + form.getfirst("player"))
 elif index == "play":
     def s(x):
         if x is not None:
@@ -177,7 +185,7 @@ elif index == "play":
     p.add_paragraph(room_data[0][3] + "<br/>" + room_data[0][6])
     if room_data[0][1]:
         p.add_paragraph("Hai trovato la strada per tornare a casa!")
-        p.add_button("Termina l'avventura", "index.py?page=endgame&amp;player=" + form.getfirst("player"))
+        p.add_button("Termina l'avventura", "index.py?page=limbo&amp;player=" + form.getfirst("player"))
     enemies = database.query("SELECT id, nome, descr, _att, _dif, _pfmax, _pfrim, _danno FROM ist_nemico_view WHERE in_stanza = %s", (room_data[0][0],))
     if len(enemies) != 0:
         p.add_paragraph("Ci sono dei nemici:")
