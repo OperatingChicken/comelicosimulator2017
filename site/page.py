@@ -37,5 +37,7 @@ class Page:
             if field["t"] == "number":
                 if "min" in field:
                     self.text += " min='" + field["min"] + "'"
+                if "max" in field:
+                    self.text += " max='" + field["max"] + "'"
             self.text += "/><br/>"
         self.text += "<input type='submit' value='" + send_label + "'/></form>"

@@ -113,14 +113,14 @@ elif index == "create":
         assert(len(dadi) == 1)
         p.add_title("Creazione personaggio")
         for i in range(5):
-            p.add_paragraph("Dado " + str(i) + ": " + str(dadi[0][i]))
-        p.add_newline()
+            p.add_paragraph("Dado (indice " + str(i) + "): " + str(dadi[0][i]))
+        p.add_paragraph("Inserire gli indici dei dadi selezionati (devono essere tutti distinti)")
         p.add_form("index.py?page=create", [{"pn": "*Nome", "n": "name", "t": "text"},
                                             {"pn": "Descrizione", "n": "desc", "t": "text"},
-                                            {"pn": "Indice FORZA", "n": "FOR", "t": "number"},
-                                            {"pn": "Indice INTELLIGENZA", "n": "INT", "t": "number"},
-                                            {"pn": "Indice AGILITA", "n": "AGI", "t": "number"},
-                                            {"pn": "Indice COSTITUZIONE", "n": "COS", "t": "number"}], "Crea")
+                                            {"pn": "Indice dado FORZA", "n": "FOR", "t": "number", "min": "0", "max": "4"},
+                                            {"pn": "Indice dado INTELLIGENZA", "n": "INT", "t": "number", "min": "0", "max": "4"},
+                                            {"pn": "Indice dado AGILITA", "n": "AGI", "t": "number", "min": "0", "max": "4"},
+                                            {"pn": "Indice dado COSTITUZIONE", "n": "COS", "t": "number", "min": "0", "max": "4"}], "Crea")
 elif index == "attack":
     check_auth()
     check_parameters(("player", "enemy"))
