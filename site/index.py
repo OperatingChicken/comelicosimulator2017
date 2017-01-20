@@ -161,7 +161,7 @@ elif index == "limbo":
     p.add_title("Hai vinto!")
     p.add_paragraph("Punti esperienza accumulati nella partita: " + str(player_data[0][0]))
     p.add_paragraph("Punti esperienza totali: " + str(player_data[0][0] + player_data[0][1]))
-    p.add_button("index.py?page=endgame&amp;player=" + form.getfirst("player"))
+    p.add_button("Termina partita", "index.py?page=endgame&amp;player=" + form.getfirst("player"))
 elif index == "play":
     def s(x):
         if x is not None:
