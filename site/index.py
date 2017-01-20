@@ -9,6 +9,7 @@ import os
 import sys
 import hashlib
 import io
+import math
 import codecs
 
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
@@ -238,15 +239,16 @@ elif index == "get":
 elif index == "inventory":
     if "player" not in form:
         redirect("index.py?page=error")
-    player_data = database.query("SELECT creato_da, in_stanza FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
+    player_data = database.query("SELECT creato_da, in_stanza, _COS FROM personaggio WHERE id = %s", (int(form.getfirst("player")),))
     if len(player_data) == 0 or player_data[0][0] != sess.data["id"]:
         redirect("index.py?page=error")
-    items = database.query("SELECT nome, descr, nome_car, descr_car, nome_rarita, descr_rarita, classe, equip, _att, _dif, _per, _pf, _danno, recupero_pf, id FROM zaino(%s)", (form.getfirst("player"),))
+    items = database.query("SELECT nome, descr, nome_car, descr_car, nome_rarita, descr_rarita, classe, equip, _att, _dif, _per, _pf, _danno, recupero_pf, id FROM zaino(%s)", (int(form.getfirst("player")),))
     p.add_title("Inventario")
     def s(x):
         if x is not None:
             return str(x)
         return ""
+    p.add_paragraph("Oggetti in inventario: " + str(len(items)) + "/" + str(int(math.ceil(player_data[0][2] / 2.0))))
     for item in items:
         start_desc = s(item[0]) + " " + s(item[4]) + " " + s(item[2]) + ": " + s(item[1]) + " " + s(item[3]) + " " + s(item[5])
         end_desc = "Bonus PF: " + s(item[11]) + " | ATT: " + s(item[8]) + " | DIF: " + s(item[9]) + " | PER: " + s(item[10])
