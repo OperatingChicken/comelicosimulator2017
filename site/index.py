@@ -20,7 +20,7 @@ def exception_handler(a, b, c):
     cgitb.handler((a, b, c))
 sys.excepthook = exception_handler
 
-database = db.DB("game", "comsimgame17", "game", "game", "eip.ovh", True)
+database = db.DB("game", "comsimgame17", "game", "game", "localhost")
 
 cookie = {}
 if "HTTP_COOKIE" in os.environ:
