@@ -1,11 +1,13 @@
+CREATE LANGUAGE plpython3u;
+
 --Rolla 5 volte 3d6 e salva tutto in una tabella di lanci temporanei
 CREATE OR REPLACE FUNCTION tira_dadi_attr(utente INTEGER) RETURNS void
 AS $$
 import random
-
+#Cancella un eventuale rollata precedente
 plan = plpy.prepare("DELETE FROM lancio_dadi_attr WHERE utente=$1", ["integer"])
 plpy.execute(plan, [utente])
-
+#Inserisce una nuova rollata
 plan = plpy.prepare("INSERT INTO lancio_dadi_attr VALUES ($1, $2, $3, $4, $5, $6)", ["integer", "main_attribute", "main_attribute", "main_attribute", "main_attribute", "main_attribute"])
 args = [utente]
 for i in range(5):
@@ -172,7 +174,7 @@ tipo_oggetto_altro = plpy.execute("SELECT * FROM tipo_oggetto WHERE classe IS NU
 car_oggetto = plpy.execute("SELECT * FROM car_oggetto")
 rarita_oggetto = plpy.execute("SELECT * FROM rarita_oggetto")
 for i in range(0, 32):
-    room_difficulty = difficulty * ((30+i)/30)
+    room_difficulty = difficulty * ((32+i)/32)
     #Nessun nemico nella prima e nell ultima stanza
     if i>=1 and i<=30:
         n_nemici = geometric(0.5)

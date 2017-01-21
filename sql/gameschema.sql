@@ -39,7 +39,7 @@ CREATE TABLE lancio_dadi_attr (
 CREATE TABLE tipo_stanza (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT,
+    descr   TEXT NOT NULL,
     perc    DOUBLE PRECISION NOT NULL
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE nome_stanza (
 CREATE TABLE modif_stanza (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT
+    descr   TEXT NOT NULL
 );
 
 CREATE TABLE stanza (
@@ -88,7 +88,7 @@ CREATE TABLE connessa (
 CREATE TABLE tipo_nemico (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT,
+    descr   TEXT NOT NULL,
     min_ATT INTEGER NOT NULL,
     max_ATT INTEGER NOT NULL,
     min_DIF INTEGER NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE personaggio (
 CREATE TABLE tipo_oggetto (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT,
+    descr   TEXT NOT NULL,
     _ATT    base_bonus NOT NULL,
     _DIF    base_bonus NOT NULL,
     _PER    base_bonus NOT NULL,
@@ -157,7 +157,7 @@ CREATE TABLE tipo_oggetto (
 CREATE TABLE car_oggetto (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT,
+    descr   TEXT NOT NULL,
     add_b_ATT INTEGER NOT NULL,
     add_b_DIF INTEGER NOT NULL,
     add_b_PER INTEGER NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE car_oggetto (
 CREATE TABLE rarita_oggetto (
     id      SERIAL PRIMARY KEY,
     nome    TEXT NOT NULL,
-    descr   TEXT,
+    descr   TEXT NOT NULL,
     bonus   INTEGER NOT NULL,
     perc    DOUBLE PRECISION NOT NULL
 );
