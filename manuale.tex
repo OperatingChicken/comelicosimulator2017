@@ -57,7 +57,7 @@ Prima di importare gli script SQL occorre creare un database \texttt{game} e un 
 Mentre si è loggati come \texttt{game}, importare i file \texttt{gameschema.sql} e \texttt{content.sql} nell'ordine specificato per creare le relazioni e popolare il database con i dati di gioco iniziali. Occorre invece essere loggati come \texttt{postgres} per l'importazione successiva di \texttt{functions.sql} e \texttt{triggers.sql}, siccome il linguaggio procedurale utilizzato, \texttt{plpython3u}, è untrusted.
 
 \subsection{Configurazione Applicazione Web}
-Occorre spostare il contenuto della cartella \texttt{site} in una cartella a piacimento, a condizione che tutte le cartelle del percorso all'indietro dalla cartella scelta verso \texttt{/} abbiano i bit di lettura e di eseguibilità attivati.
+Occorre spostare il contenuto della cartella \texttt{site} in una cartella a piacimento, a condizione che tutte le cartelle del percorso all'insù dalla cartella scelta verso \texttt{/} abbiano i bit di lettura e di eseguibilità attivati.
 
 Occorre in seguito modificare il file di configurazione di apache aggiungendo in fondo:
 

@@ -41,12 +41,12 @@
 
 \textit{Comelico Simulator 2017} è un'applicazione web che consente a utenti registrati di partecipare a un gioco di ruolo di genere \textit{survival roguelike}, in cui si possono creare personaggi e con essi esplorare sedi universitarie abbandonate generate casualmente, combattere nemici di difficoltà crescente, trovare oggetti di diverse rarità e variazioni, e scambiarli con altri giocatori per valuta di gioco. I dati di gioco sono memorizzati in una base di dati e la logica di gioco è implementata completamente con procedure e trigger nel linguaggio procedurale della base di dati stessa.
 
-Per l'implementazione sono stati scelti PostgreSQL come DBMS, PL/Python 3 come linguaggio procedurale e python come linguaggio per lo sviluppo dell'interfaccia web.
+Per l'implementazione sono stati scelti PostgreSQL come DBMS, PL/Python 3 come linguaggio procedurale e python3 come linguaggio per lo sviluppo dell'interfaccia web.
 
 \includepdf{ER.pdf}
 
 \section{Schema Concettuale ER della base di dati}
-Concettualmente il Database è costituito dalle entità principali:
+Concettualmente il Database è costituito dalle seguenti entità principali:
 
 \subsection{Utente}
 Rappresenta l'utente registrato all'applicazione, ha come attributi un id, i dati di login e un nome opzionale. È in grado di creare più Personaggi (relazione uno a molti).
