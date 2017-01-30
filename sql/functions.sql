@@ -90,7 +90,10 @@ AS $$
 
 from random import randrange, random
 
-start_node = plpy.execute("SELECT COALESCE(last_value, 0) AS last_value FROM stanza_id_seq")[0]["last_value"] + 1
+start_node = plpy.execute("SELECT last_value AS last_value FROM stanza_id_seq")[0]["last_value"] + 1
+#Alla primissima generazione last_value è a 1 quando dovrebbe essere a 0, aggiro il problema
+if start_node==2:
+    start_node=1
 
 #Creo le 32 stanze
 tipo_stanza = [i for i in plpy.execute("SELECT id, perc FROM tipo_stanza")]
